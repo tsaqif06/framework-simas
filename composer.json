@@ -1,0 +1,20 @@
+{
+	"name": "tsaqif06/framework-simas",
+	"type": "project",
+	"description": "The skeleton application for the SIMAS framework.",
+	"keywords": [
+		"simas",
+		"framework"
+	],
+	"require": {
+		"php": "^8.1",
+		"vlucas/phpdotenv": "^5.5",
+		"firebase/php-jwt": "^6.9"
+	},
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"FrameworkSimas\\": "app/"
+		}
+	}
+}

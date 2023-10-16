@@ -1,0 +1,5 @@
+/vendor
+/config/config.php
+.env
+.env.backup
+.env.production
