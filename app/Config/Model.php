@@ -91,4 +91,24 @@ class Model
 
         return $stmt->rowCount();
     }
+
+    public function runMigration()
+    {
+        try {
+            $conn = "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']}:{$_ENV['DB_PORT']}";
+            $tempDb = new PDO($conn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
+            $tempDb->exec("DROP DATABASE IF EXISTS {$_ENV['DB_NAME']}");
+            $tempDb->exec("CREATE DATABASE {$_ENV['DB_NAME']}");
+            $tempDb = null;
+
+            $this->db->exec("USE {$_ENV['DB_NAME']}");
+
+            $sql = file_get_contents(__DIR__ . "/../../database/{$_ENV['DB_NAME']}.sql");
+            $this->db->exec($sql);
+            echo "db migrate succesfully!<br>
+                <a href=" . '"' . BASEURL . '/user"' . "><- Back</a>";
+        } catch (\PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
 }
