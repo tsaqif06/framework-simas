@@ -69,7 +69,8 @@ To get a local copy up and running follow these simple example steps.
 
 This is an example of how to list things you need to use the software and how to install them.
 
-- composer
+- ```php 8.1``` or newer
+- ```composer```
   install it manually from the [composer official website](https://getcomposer.org/)
 
 ### Installation
