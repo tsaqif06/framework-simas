@@ -3,6 +3,7 @@
 use Dotenv\Dotenv;
 use FrameworkSimas\Config\Flasher;
 
+require_once __DIR__ . "/../app/Config/Bootstrap.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/../app/Config/Functions.php";
 $dotenv = Dotenv::createImmutable(__DIR__ . "/../");
