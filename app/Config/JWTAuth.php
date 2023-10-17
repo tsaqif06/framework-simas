@@ -11,7 +11,7 @@ class JWTAuth
 
     public static function init()
     {
-        self::$SECRET_KEY = $_ENV['JWT_SECRET'];
+        self::$SECRET_KEY = $_ENV['JWT_KEY'];
     }
 
     public static function createToken($payload, $exp)

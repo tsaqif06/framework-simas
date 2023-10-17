@@ -9,16 +9,16 @@
 <br />
 <div align="center">
 
-  <h3 align="center">SIMAS' Framework</h3>
+  <h3 align="center">SIMAS Framework</h3>
 
   <p align="center">
     An PHP Framework to help you develope website easier!
     <br />
     <br />
     <br />
-    <a href="https://github.com/tsaqif06/framework-simas/issues">Report Bug</a>
+    <a href="https://github.com/tsaqif06/SIMASFramework/issues">Report Bug</a>
     ·
-    <a href="https://github.com/tsaqif06/framework-simas/issues">Request Feature</a>
+    <a href="https://github.com/tsaqif06/SIMASFramework/issues">Request Feature</a>
   </p>
 </div>
 
@@ -51,6 +51,11 @@ Here's why:
 - So that this framework can last a long time, because it uses native PHP
 - Used by employees of PT. 3 Pilar Garuda
 
+<br>
+
+**_DISCLAIMER_**
+_This framework is still under development, so if there are bugs or more desired features, please just fill in the issues in this GitHub repository. This framework will continue to be updated in line with the progress of the times_
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
@@ -73,15 +78,34 @@ _Below is an example of how you can instruct your audience on installing and set
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/tsaqif06/framework-simas.git
+   git clone https://github.com/tsaqif06/SIMASFramework.git
    ```
 2. Install composer packages
    ```sh
    composer install
    ```
-3. Copy and paste config.example.php in /config too and rename it to config.php
+3. Generate `.env` file
 
-4. And put your configuration like BASEURL, DBNAME and TABLENAME in config.php
+   ```sh
+   cp .env.example .env
+   ```
+
+4. You’ll need to modify the following block of settings to match your website configuration:
+   ```sh
+   APP_NAME=SIMASFramework
+   APP_DEBUG=true
+   DB_DRIVER=mysql
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_NAME=
+   DB_USER=root
+   DB_PASS=
+   JWT_KEY=
+   ```
+5. You need to migrate the database located in the `database` folder by visiting the `/runmigrate` path in the URL. But if you're ready to publish the website, you can remove the `/runmigrate` route in `routes/route.php`
+
+6. In this file, there is already a demonstration of using the SIMAS Framework. Please go to the path ```/register``` and fill in the data, which will then be directed to ```/login```. After that, log in, and you will be directed to ```/user```, where there is an example of using CRUD in this framework
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,20 +138,20 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Project Link: [https://github.com/tsaqif06/framework-simas](https://github.com/tsaqif06/framework-simas)
+Project Link: [https://github.com/tsaqif06/SIMASFramework](https://github.com/tsaqif06/SIMASFramework)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[contributors-shield]: https://img.shields.io/github/contributors/tsaqif06/framework-simas.svg?style=for-the-badge
-[contributors-url]: https://github.com/tsaqif06/framework-simas/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/tsaqif06/framework-simas.svg?style=for-the-badge
-[forks-url]: https://github.com/tsaqif06/framework-simas/network/members
-[stars-shield]: https://img.shields.io/github/stars/tsaqif06/framework-simas.svg?style=for-the-badge
-[stars-url]: https://github.com/tsaqif06/framework-simas/stargazers
-[issues-shield]: https://img.shields.io/github/issues/tsaqif06/framework-simas.svg?style=for-the-badge
-[issues-url]: https://github.com/tsaqif06/framework-simas/issues
-[license-shield]: https://img.shields.io/github/license/tsaqif06/framework-simas.svg?style=for-the-badge
-[license-url]: https://github.com/tsaqif06/framework-simas/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/tsaqif06/SIMASFramework.svg?style=for-the-badge
+[contributors-url]: https://github.com/tsaqif06/SIMASFramework/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tsaqif06/SIMASFramework.svg?style=for-the-badge
+[forks-url]: https://github.com/tsaqif06/SIMASFramework/network/members
+[stars-shield]: https://img.shields.io/github/stars/tsaqif06/SIMASFramework.svg?style=for-the-badge
+[stars-url]: https://github.com/tsaqif06/SIMASFramework/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tsaqif06/SIMASFramework.svg?style=for-the-badge
+[issues-url]: https://github.com/tsaqif06/SIMASFramework/issues
+[license-shield]: https://img.shields.io/github/license/tsaqif06/SIMASFramework.svg?style=for-the-badge
+[license-url]: https://github.com/tsaqif06/SIMASFramework/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/tsaqif06
 [product-screenshot]: images/screenshot.png
