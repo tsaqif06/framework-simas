@@ -13,4 +13,4 @@ define("BASEURL", $_ENV['BASE_URL']);
 $flasher = Flasher::flash();
 $GLOBALS['flasher'] = $flasher;
 
-require_once __DIR__ . '/../rutes/route.php';
+require_once __DIR__ . '/../routes/route.php';
