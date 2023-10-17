@@ -13,7 +13,7 @@ class MigrateController extends Controller
     {
         $this->model = new User();
     }
-    // main page
+
     public function index()
     {
         $this->model->runMigration();
