@@ -30,6 +30,13 @@ class Route
 
         $matched = false;
 
+        // Add default route
+        // if ($path === '/') {
+        //     $defaultController = new DefaultController();
+        //     $defaultController->index();
+        //     return;
+        // }
+
         foreach (self::$routes as $route) {
             $pattern = "#^{$route['path']}$#";
             $pattern = preg_replace_callback('/\{([^\}]+)\}/', function ($matches) {
