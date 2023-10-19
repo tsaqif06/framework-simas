@@ -1,5 +1,6 @@
+public/assets/img/uploads/*
+!public/assets/img/uploads/.gitkeep
 /vendor
-/config/config.php
 .env
 .env.backup
 .env.production

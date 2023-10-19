@@ -5,8 +5,13 @@ use FrameworkSimas\Controller\AuthController;
 use FrameworkSimas\Controller\UserController;
 use FrameworkSimas\Controller\LoginController;
 use FrameworkSimas\Controller\MigrateController;
+use FrameworkSimas\Controller\ProductController;
 use FrameworkSimas\Controller\RegisterController;
 
+
+/**
+ * User
+ */
 /**
  * show
  */
@@ -15,19 +20,46 @@ Route::add('GET', '/user', UserController::class, 'index', 'user');
 /**
  * create
  */
-Route::add('GET', '/user/create', UserController::class, 'create');
-Route::add('POST', '/user/create', UserController::class, 'store');
+Route::add('GET', '/user/create', UserController::class, 'create', 'admin');
+Route::add('POST', '/user/create', UserController::class, 'store', 'admin');
 
 /**
  * edit
  */
-Route::add('GET', '/user/edit/{id}', UserController::class, 'edit');
-Route::add('POST', '/user/edit/{id}', UserController::class, 'update');
+Route::add('GET', '/user/edit/{id}', UserController::class, 'edit', 'admin');
+Route::add('POST', '/user/edit/{id}', UserController::class, 'update', 'admin');
 
 /**
  * delete
  */
-Route::add('GET', '/user/delete/{id}', UserController::class, 'delete');
+Route::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin');
+
+
+/**
+ * Product
+ */
+/**
+ * show
+ */
+Route::add('GET', '/product', ProductController::class, 'index', 'user');
+
+/**
+ * create
+ */
+Route::add('GET', '/product/create', ProductController::class, 'create');
+Route::add('POST', '/product/create', ProductController::class, 'store');
+
+/**
+ * edit
+ */
+Route::add('GET', '/product/edit/{id}', ProductController::class, 'edit');
+Route::add('POST', '/product/edit/{id}', ProductController::class, 'update');
+
+/**
+ * delete
+ */
+Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete');
+
 
 Route::add('GET', '/runmigrate', MigrateController::class, 'index');
 
