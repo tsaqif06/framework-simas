@@ -2,6 +2,8 @@
 
 namespace FrameworkSimas\Controller;
 
+use Rakit\Validation\Validator;
+
 use FrameworkSimas\Model\Product;
 use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\Controller;
@@ -35,6 +37,26 @@ class ProductController extends Controller
      */
     public function store()
     {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST + $_FILES, [
+            'name'                 => 'required',
+            'photo'                => 'required|uploaded_file:0'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /product/create");
+            exit();
+        }
+
         if ($this->model->create($_POST) > 0) {
             Flasher::setFlash('BERHASIL', 'Store', 'success');
             header("Location: " . BASEURL . "/product");

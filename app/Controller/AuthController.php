@@ -3,6 +3,7 @@
 namespace FrameworkSimas\Controller;
 
 use FrameworkSimas\Model\User;
+use Rakit\Validation\Validator;
 use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\JWTAuth;
 use FrameworkSimas\Config\Controller;
@@ -18,6 +19,27 @@ class AuthController extends Controller
 
     public function register()
     {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            'name'                  => 'required',
+            'email'                 => 'required',
+            'password'              => 'required|min:5'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /register");
+            exit();
+        }
+
         if ($this->user->create($_POST) > 0) {
             Flasher::setFlash('BERHASIL', 'Register', 'success');
             header("Location: " . BASEURL . "/login");
@@ -30,6 +52,26 @@ class AuthController extends Controller
 
     public function login()
     {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            'email'                 => 'required',
+            'password'              => 'required'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /login");
+            exit();
+        }
+
         $email = $_POST['email'];
         $password = $_POST['password'];
 

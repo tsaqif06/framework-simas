@@ -3,6 +3,7 @@
 namespace FrameworkSimas\Controller;
 
 use FrameworkSimas\Model\User;
+use Rakit\Validation\Validator;
 use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\Controller;
 
@@ -35,6 +36,27 @@ class UserController extends Controller
      */
     public function store()
     {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            'name'                  => 'required',
+            'email'                 => 'required',
+            'password'              => 'required|min:5'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /user/create");
+            exit();
+        }
+
         if ($this->model->create($_POST) > 0) {
             Flasher::setFlash('BERHASIL', 'Store', 'success');
             header("Location: " . BASEURL . "/user");

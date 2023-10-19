@@ -10,8 +10,10 @@
 <body>
     <h1>Tambah Data</h1>
     <form action="" method="post" enctype="multipart/form-data">
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" <?php oldValue('name') ?>>
+        <?php errorValidate('name') ?>
         <input type="file" name="photo" id="photo" accept="image/*">
+        <?php errorValidate('photo') ?>
         <button type="submit">Store</button>
     </form>
 </body>
