@@ -45,12 +45,6 @@ class Route
             // /product/1
             // [/product, 1]
             if (preg_match($pattern, $path, $variables) && ($method == $route['method'])) {
-                // call middleware
-                // foreach ($route['middleware'] as $middleware) {   
-                //     $middleware = ucfirst($middleware);
-                //     $instances = new $middleware;
-                //     $instances->before();
-                // }
                 $middleware = $route['middleware'];
                 if ($middleware != null) {
                     $instances = new RoleMiddleware;

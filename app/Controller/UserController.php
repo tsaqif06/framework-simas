@@ -19,6 +19,7 @@ class UserController extends Controller
     public function index()
     {
         return $this->view("home/index", [
+            'title' => 'User - Main',
             'user' => $this->model->all()
         ]);
     }
@@ -28,7 +29,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return $this->view("home/create");
+        return $this->view("home/create", [
+            'title' => 'User - Create',
+        ]);
     }
 
     /** 
@@ -71,6 +74,7 @@ class UserController extends Controller
     public function edit($request)
     {
         return $this->view("home/edit", [
+            'title' => 'User - Edit',
             'user' => $this->model->find($request['id']),
         ]);
     }
@@ -80,6 +84,28 @@ class UserController extends Controller
      */
     public function update($request)
     {
+
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            'name'                  => 'required',
+            'email'                 => 'required',
+            'password'              => 'required|min:5'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /user/edit/{$request['id']}");
+            exit();
+        }
+
         if ($this->model->update($request['id'], $_POST) > 0) {
             Flasher::setFlash('BERHASIL', 'Update', 'success');
             header("Location: " . BASEURL . "/user");

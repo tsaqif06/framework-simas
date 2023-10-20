@@ -34,14 +34,15 @@ class Model
 
     public function create($data = [])
     {
-        $photo = $this->uploadImage();
-        if (empty($_FILES)) {
+        $keyName = "photo";
+        if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
+            $photo = $this->uploadImage($keyName);
             if ($photo == 0) {
                 return 0;
+            } else {
+                $data['photo'] = $photo;
             }
         }
-
-        $data['photo'] = $photo;
         $data['created_at'] = date('Y-m-d H:i:s');
 
         $columns = implode(',', array_keys($data));
@@ -58,21 +59,20 @@ class Model
         return $stmt->rowCount();
     }
 
-
-    public function uploadImage()
+    public function uploadImage($key)
     {
-        if (empty($_FILES)) {
+        if ($_FILES[$key]['error'] == 4) {
             return;
         }
 
-        $targetDir = $_SERVER['DOCUMENT_ROOT'] . "/public/assets/img/uploads/";
+        $targetDir = ROOT . "/public/assets/img/uploads/";
         $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($_FILES["photo"]["name"], PATHINFO_EXTENSION));
+        $imageFileType = strtolower(pathinfo($_FILES[$key]["name"], PATHINFO_EXTENSION));
         $randomString = bin2hex(random_bytes(10));
         $targetFile = $targetDir . $randomString . "." . $imageFileType;
 
         if (isset($_POST["submit"])) {
-            $check = getimagesize($_FILES["photo"]["tmp_name"]);
+            $check = getimagesize($_FILES[$key]["tmp_name"]);
             if ($check !== false) {
                 $uploadOk = 1;
             } else {
@@ -81,7 +81,7 @@ class Model
             }
         }
 
-        if ($_FILES["photo"]["size"] > 500000) {
+        if ($_FILES[$key]["size"] > 500000) {
             echo "Sorry, your file is too large.";
             $uploadOk = 0;
         }
@@ -99,7 +99,7 @@ class Model
         if ($uploadOk == 0) {
             return $uploadOk;
         } else {
-            if (move_uploaded_file($_FILES["photo"]["tmp_name"], $targetFile)) {
+            if (move_uploaded_file($_FILES[$key]["tmp_name"], $targetFile)) {
                 return $finalName;
             } else {
                 return 0;
@@ -109,6 +109,24 @@ class Model
 
     public function update($id, $data = [])
     {
+        $keyName = "photo";
+        if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
+            $photo = $this->uploadImage($keyName);
+            if ($photo == 0) {
+                return 0;
+            } else {
+                $data['photo'] = $photo;
+
+                $oldPhoto = $this->find($id)['photo'];
+
+                $path = ROOT . "/public/assets/img/uploads/{$oldPhoto}";
+
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+        }
+
         $data['updated_at'] = date('Y-m-d H:i:s');
 
         $updates = [];

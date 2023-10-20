@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../partials/header.php'; ?>
+<?php includeView('partials/header.php', $data) ?>
 <h1>Halo</h1>
 <?php $GLOBALS['flasher'] ?>
 <a href="<?= BASEURL ?>/user/create">Tambah</a>
@@ -16,4 +16,4 @@
         <?php $i++ ?>
     <?php endforeach ?>
 </table>
-<?php require __DIR__ . '/../partials/footer.php'; ?>
+<?php includeView('partials/footer.php') ?>

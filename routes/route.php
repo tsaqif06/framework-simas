@@ -15,7 +15,7 @@ use FrameworkSimas\Controller\RegisterController;
 /**
  * show
  */
-Route::add('GET', '/user', UserController::class, 'index', 'user');
+Route::add('GET', '/user', UserController::class, 'index', 'auth');
 
 /**
  * create
@@ -41,7 +41,7 @@ Route::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin')
 /**
  * show
  */
-Route::add('GET', '/product', ProductController::class, 'index', 'user');
+Route::add('GET', '/product', ProductController::class, 'index', 'auth');
 
 /**
  * create

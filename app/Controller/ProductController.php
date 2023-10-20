@@ -20,7 +20,8 @@ class ProductController extends Controller
     public function index()
     {
         return $this->view("product/index", [
-            'products' => $this->model->all()
+            'title' => 'Product - Main',
+            'products' => $this->model->all(),
         ]);
     }
 
@@ -29,7 +30,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return $this->view("product/create");
+        return $this->view("product/create", [
+            'title' => 'Product - Create',
+        ]);
     }
 
     /** 
@@ -71,6 +74,7 @@ class ProductController extends Controller
     public function edit($request)
     {
         return $this->view("product/edit", [
+            'title' => "Product - Edit",
             'product' => $this->model->find($request['id']),
         ]);
     }
@@ -80,6 +84,25 @@ class ProductController extends Controller
      */
     public function update($request)
     {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            'name'                 => 'required',
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /product/edit/{$request['id']}");
+            exit();
+        }
+
         if ($this->model->update($request['id'], $_POST) > 0) {
             Flasher::setFlash('BERHASIL', 'Update', 'success');
             header("Location: " . BASEURL . "/product");
