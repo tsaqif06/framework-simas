@@ -1,7 +1,8 @@
 <?php includeView('partials/header.php', $data) ?>
-<h1>Halo</h1>
+<h1><?= lang('welcome') ?></h1>
+<h1><?= lang('greeting', ['name' => 'John Doe']) ?></h1>
 <?php $GLOBALS['flasher'] ?>
-<a href="<?= BASEURL ?>/user/create">Tambah</a>
+<a href="<?= BASEURL ?>/user/create"><?= lang('add') ?></a>
 <table>
     <?php $i = 1 ?>
     <?php foreach ($data['user'] as $user) : ?>
