@@ -1,5 +1,7 @@
 <?php
 
+use FrameworkSimas\Config\JWTAuth;
+
 function put()
 {
     echo '<input type="hidden" name="_method" value="PUT">';
@@ -37,6 +39,14 @@ function includeView($dir, $data = [])
 {
     extract($data);
     include ROOT . "/resources/views/{$dir}";
+}
+
+function auth()
+{
+    $token = JWTAuth::getToken();
+    if (isset($token)) {
+        return $token;
+    }
 }
 
 function lang($key, $variables = [])
