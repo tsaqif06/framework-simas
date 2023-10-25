@@ -102,6 +102,7 @@ _Below is an example of how you can instruct your audience on installing and set
    DB_USER=root
    DB_PASS=
    JWT_KEY=
+   APP_LANG=en
    ```
 5. You need to migrate the database located in the `database` folder by visiting the `/runmigrate` path in the URL. But if you're ready to publish the website, you can remove the `/runmigrate` route in `routes/route.php`
 
