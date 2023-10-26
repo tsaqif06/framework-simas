@@ -63,3 +63,8 @@ function lang($key, $variables = [])
 
     return $key;
 }
+
+function isRoute($routeName)
+{
+    return isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === $routeName;
+}

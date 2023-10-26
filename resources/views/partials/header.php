@@ -16,6 +16,8 @@
 </head>
 
 <body>
-    <form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
+    <?php if (!isRoute('/login')) : ?>
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    <?php endif ?>
