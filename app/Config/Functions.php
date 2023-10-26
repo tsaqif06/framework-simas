@@ -1,6 +1,7 @@
 <?php
 
 use FrameworkSimas\Config\JWTAuth;
+use FrameworkSimas\Config\Flasher;
 
 function put()
 {
@@ -47,6 +48,11 @@ function auth()
     if (isset($token)) {
         return $token;
     }
+}
+
+function flasher()
+{
+    return Flasher::flash();
 }
 
 function lang($key, $variables = [])

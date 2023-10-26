@@ -1,7 +1,8 @@
 <?php includeView('partials/header.php', $data) ?>
 <h1><?= lang('welcome') ?></h1>
 <h1><?= lang('greeting', ['name' => auth()->name]) ?></h1>
-<?php $GLOBALS['flasher'] ?>
+<?= flasher() ?>
+
 <a href="<?= BASEURL ?>/user/create"><?= lang('add') ?></a>
 <table>
     <?php $i = 1 ?>

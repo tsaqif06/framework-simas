@@ -1,6 +1,7 @@
 <?php includeView('partials/header.php', $data) ?>
 <h1>Halo</h1>
-<?php $GLOBALS['flasher'] ?>
+<?= flasher() ?>
+
 <a href="<?= BASEURL ?>/product/create">Tambah</a>
 <table>
     <?php $i = 1 ?>

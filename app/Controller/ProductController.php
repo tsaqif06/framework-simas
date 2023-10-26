@@ -61,10 +61,11 @@ class ProductController extends Controller
         }
 
         if ($this->model->create($_POST) > 0) {
-            Flasher::setFlash('BERHASIL', 'Store', 'success');
+            Flasher::setFlash('SUCCESS', 'Store', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            echo "Failed to store data";
+            Flasher::setFlash('FAILED', 'Store', 'success');
+            header("Location: " . BASEURL . "/product");
         }
     }
 
@@ -104,10 +105,11 @@ class ProductController extends Controller
         }
 
         if ($this->model->update($request['id'], $_POST) > 0) {
-            Flasher::setFlash('BERHASIL', 'Update', 'success');
+            Flasher::setFlash('SUCCESS', 'Update', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            echo "Failed to update data";
+            Flasher::setFlash('FAILED', 'Update', 'success');
+            header("Location: " . BASEURL . "/product");
         }
     }
 
@@ -118,10 +120,11 @@ class ProductController extends Controller
     public function delete($request)
     {
         if ($this->model->delete($request['id']) > 0) {
-            Flasher::setFlash('BERHASIL', 'Delete', 'success');
+            Flasher::setFlash('SUCCESS', 'Delete', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            echo "Failed to delete data";
+            Flasher::setFlash('FAILED', 'Delete', 'success');
+            header("Location: " . BASEURL . "/product");
         }
     }
 }

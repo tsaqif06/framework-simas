@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <?php if (!isRoute('/login')) : ?>
+    <?php if (!isRoute('/login') && !isRoute('/register')) : ?>
         <form action="/logout" method="post">
             <button type="submit">Logout</button>
         </form>

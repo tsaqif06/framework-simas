@@ -1,4 +1,5 @@
 <?php includeView('partials/header.php', $data) ?>
+<?= flasher() ?>
 <form action="" method="POST">
     <input type="email" name="email" id="email" placeholder="email" <?php oldValue('email') ?>><br>
     <?php errorValidate('email') ?>

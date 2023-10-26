@@ -41,12 +41,11 @@ class AuthController extends Controller
         }
 
         if ($this->user->create($_POST) > 0) {
-            Flasher::setFlash('BERHASIL', 'Register', 'success');
+            Flasher::setFlash('SUCCESS', 'Register', 'success');
             header("Location: " . BASEURL . "/login");
         } else {
-            http_response_code(401);
-            echo json_encode(['error' => 'Data incorrect, please try again!']);
-            return;
+            Flasher::setFlash('FAILED', 'Register', 'success');
+            header("Location: " . BASEURL . "/register");
         }
     }
 
@@ -78,9 +77,8 @@ class AuthController extends Controller
         $user = $this->user->getUserByEmail($email);
 
         if (!$user || $user['password'] !== $password) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Invalid credentials']);
-            return;
+            Flasher::setFlash('FAILED', 'Login', 'success');
+            header("Location: " . BASEURL . "/register");
         }
 
         $token = [
@@ -92,14 +90,14 @@ class AuthController extends Controller
         ];
 
         JWTAuth::createToken($token, $token['exp']);
-        Flasher::setFlash('BERHASIL', 'Login', 'success');
+        Flasher::setFlash('SUCCESS', 'Login', 'success');
         header("Location: " . BASEURL . "/user");
     }
 
     public function logout()
     {
         JWTAuth::deleteToken();
-        Flasher::setFlash('BERHASIL', 'Logout', 'success');
+        Flasher::setFlash('SUCCESS', 'Logout', 'success');
         header("Location: " . BASEURL . "/login");
         exit;
     }
