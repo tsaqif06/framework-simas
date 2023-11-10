@@ -74,3 +74,12 @@ function isRoute($routeName)
 {
     return isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === $routeName;
 }
+
+function jsonResponse($data, $statusCode)
+{
+    header('Access-Control-Allow-Origin: *');
+    header("Content-Type: application/json");
+    http_response_code($statusCode);
+    echo json_encode($data);
+    exit();
+}
