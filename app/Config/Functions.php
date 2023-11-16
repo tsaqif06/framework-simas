@@ -30,6 +30,11 @@ function oldValue($args)
     }
 }
 
+function d($args)
+{
+    var_dump($args);
+}
+
 function dd($args)
 {
     var_dump($args);

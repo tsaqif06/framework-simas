@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+require_once 'app/Command/commandload.php';
+
+if ($argc < 2) {
+    echo "❕ Usage: php aquasun serve [port]\n";
+    exit(1);
+}
+
+$commandName = $argv[1];
+$commandClass = ucfirst($commandName) . 'Command'; // ServeCommand
+$arguments = array_slice($argv, 2);
+
+if (!class_exists($commandClass)) {
+    echo "❌ Command not found: {$commandName}\n";
+    exit(1);
+}
+
+$command = new $commandClass();
+$command->run($arguments);
