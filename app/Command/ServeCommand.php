@@ -4,7 +4,7 @@ class ServeCommand
 {
     public function run($arguments)
     {
-        $port = isset($arguments[0]) ? $arguments[0] : 80;
+        $port = isset($arguments[0]) ? $arguments[0] : 4000;
         $this->startServer($port);
     }
 
