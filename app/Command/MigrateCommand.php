@@ -12,7 +12,7 @@ class MigrateCommand
 
     public function run($argument)
     {
-        $conn = "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']}:{$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']}";
+        $conn = "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']}:{$_ENV['DB_PORT']}";
         $this->db = new PDO($conn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
         $this->startMigrate();
     }
@@ -36,9 +36,9 @@ class MigrateCommand
 
             $sql = file_get_contents(__DIR__ . "/../../database/{$_ENV['DB_NAME']}.sql");
             $this->db->exec($sql);
-            echo "{$blue}✔ database in {$yellow}/database/{$_ENV['DB_NAME']}.sql{$blue} has been successfully migrated $reset";
+            output("✔ database in {$yellow}/database/{$_ENV['DB_NAME']}.sql{$blue} has been successfully migrated", "blue");
         } catch (\PDOException $e) {
-            echo "{$red}❌ Error: " . $e->getMessage() . "$reset";
+            output("❌ Error: " . $e->getMessage(), "red");
         }
     }
 }

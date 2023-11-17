@@ -4,24 +4,27 @@ class ServeCommand
 {
     public function run($arguments)
     {
-        $port = isset($arguments[0]) ? $arguments[0] : 4000;
+        $port = isset($arguments[0]) ? $arguments[0] : 80;
         $this->startServer($port);
     }
 
     protected function startServer($port)
     {
-        $red = "\033[0;31m";
-        $green = "\033[0;32m";
         $yellow = "\033[1;33m";
-        $blue = "\033[0;34m";
-        $reset = "\033[0m";
+        $url = "http://localhost:$port";
 
-        echo "{$blue}Server is running on {$yellow}http://localhost:$port\n $reset";
-        shell_exec("start explorer http://localhost:$port");
+        output("Server is running on {$yellow}{$url}", "blue");
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            exec("start $url");
+        } else {
+            exec("xdg-open $url");
+        }
+
         try {
             exec("php -S localhost:$port -t public");
         } catch (\PDOException $e) {
-            echo "{$red}❌ Error: " . $e->getMessage() . "$reset";
+            output("❌ Error: " . $e->getMessage(), "red");
         }
     }
 }

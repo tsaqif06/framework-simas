@@ -2,6 +2,29 @@
 <?php
 require_once 'app/Command/commandload.php';
 
+function output($args, $color)
+{
+    switch ($color) {
+        case 'red':
+            $color = "\033[0;31m";
+            break;
+        case 'green':
+            $color = "\033[0;32m";
+            break;
+        case 'yellow':
+            $color = "\033[1;33m";
+            break;
+        case 'blue':
+            $color = "\033[0;34m";
+            break;
+        default:
+            echo "color hasnt available yet!";
+            exit(1);
+    }
+    $reset = "\033[0m";
+    echo "{$color}{$args}{$reset}";
+}
+
 if ($argc < 2) {
     echo "❕ Usage: php aquasun serve [port]\n";
     exit(1);

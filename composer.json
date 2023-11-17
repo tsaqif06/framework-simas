@@ -12,7 +12,8 @@
 		"php": "^8.1",
 		"vlucas/phpdotenv": "^5.5",
 		"firebase/php-jwt": "^6.9",
-		"rakit/validation": "^1.4"
+		"rakit/validation": "^1.4",
+		"ifsnop/mysqldump-php": "^2.12"
 	},
 	"autoload": {
 		"psr-4": {
