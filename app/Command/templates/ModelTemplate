@@ -1,0 +1,11 @@
+<?php
+
+namespace FrameworkSimas\Model;
+
+use PDO;
+use FrameworkSimas\Config\Model;
+
+class {{class}} extends Model
+{
+    protected $table = "{{table}}";
+}

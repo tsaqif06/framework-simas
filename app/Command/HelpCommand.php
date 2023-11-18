@@ -9,8 +9,6 @@ class HelpCommand
 
     protected function startHelp()
     {
-        $red = "\033[0;31m";
-        $green = "\033[0;32m";
         $yellow = "\033[1;33m";
         $blue = "\033[0;34m";
         $reset = "\033[0m";

@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php includeView('partials/header.php', $data) ?>
 <h1>Tambah Data</h1>
 <form action="" method="post" enctype="multipart/form-data">

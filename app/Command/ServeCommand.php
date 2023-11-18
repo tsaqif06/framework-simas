@@ -4,7 +4,7 @@ class ServeCommand
 {
     public function run($arguments)
     {
-        $port = isset($arguments[0]) ? $arguments[0] : 4000;
+        $port = $arguments[0] ?? 4000;
         $this->startServer($port);
     }
 
@@ -12,6 +12,7 @@ class ServeCommand
     {
         $yellow = "\033[1;33m";
         $url = "http://localhost:$port";
+        output("Serving a pizza... \n", "blue");
 
         output("Server is running on {$yellow}{$url}\n", "blue");
 

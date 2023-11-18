@@ -1,0 +1,130 @@
+<?php
+
+namespace FrameworkSimas\Controller;
+
+use Rakit\Validation\Validator;
+
+use FrameworkSimas\Model\{{argsUp}};
+use FrameworkSimas\Config\Flasher;
+use FrameworkSimas\Config\Controller;
+
+class {{argsUp}}Controller extends Controller
+{
+    protected $model;
+
+    public function __construct()
+    {
+        $this->model = new {{argsUp}}();
+    }
+    // main page
+    public function index()
+    {
+        return $this->view("{{argsLow}}/index", [
+            'title' => '{{argsUp}} - Main',
+            '{{argsLow}}s' => $this->model->all(),
+        ]);
+    }
+
+    /** 
+     * page for create
+     */
+    public function create()
+    {
+        return $this->view("{{argsLow}}/create", [
+            'title' => '{{argsUp}} - Create',
+        ]);
+    }
+
+    /** 
+     * process to create data
+     */
+    public function store()
+    {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST + $_FILES, [
+            // 'name'                 => 'required',
+            // 'photo'                => 'required|uploaded_file:0'
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /{{argsLow}}/create");
+            exit();
+        }
+
+        if ($this->model->create($_POST) > 0) {
+            Flasher::setFlash('SUCCESS', 'Store', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        } else {
+            Flasher::setFlash('FAILED', 'Store', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        }
+    }
+
+    /** 
+     * page for edit or update
+     */
+    public function edit($request)
+    {
+        return $this->view("{{argsLow}}/edit", [
+            'title' => "{{argsUp}} - Edit",
+            '{{argsLow}}' => $this->model->find($request['id']),
+        ]);
+    }
+
+    /** 
+     * process to update data
+     */
+    public function update($request)
+    {
+        if (isset($_SESSION['errors'])) {
+            unset($_SESSION['errors']);
+        }
+        $validator = new Validator;
+
+        $validation = $validator->make($_POST, [
+            // 'name'                 => 'required',
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header("Location: /{{argsLow}}/edit/{$request['id']}");
+            exit();
+        }
+
+        if ($this->model->update($request['id'], $_POST) > 0) {
+            Flasher::setFlash('SUCCESS', 'Update', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        } else {
+            Flasher::setFlash('FAILED', 'Update', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        }
+    }
+
+    /**
+     * process to delete data
+     */
+
+    public function delete($request)
+    {
+        if ($this->model->delete($request['id']) > 0) {
+            Flasher::setFlash('SUCCESS', 'Delete', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        } else {
+            Flasher::setFlash('FAILED', 'Delete', 'success');
+            header("Location: " . BASEURL . "/{{argsLow}}");
+        }
+    }
+}

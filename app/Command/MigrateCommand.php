@@ -1,11 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
-
-require_once __DIR__ . "/../../vendor/autoload.php";
-$dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
-$dotenv->load();
-
 class MigrateCommand
 {
     protected $db;
@@ -24,6 +18,7 @@ class MigrateCommand
         $yellow = "\033[1;33m";
         $blue = "\033[0;34m";
         $reset = "\033[0m";
+        output("Migrating database... \n", "blue");
 
         try {
             $conn = "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']}:{$_ENV['DB_PORT']}";
@@ -36,7 +31,7 @@ class MigrateCommand
 
             $sql = file_get_contents(__DIR__ . "/../../database/{$_ENV['DB_NAME']}.sql");
             $this->db->exec($sql);
-            output("✔ database in {$yellow}/database/{$_ENV['DB_NAME']}.sql{$blue} has been successfully migrated", "blue");
+            output("✔ Database in {$yellow}/database/{$_ENV['DB_NAME']}.sql{$blue} has been successfully migrated", "blue");
         } catch (\PDOException $e) {
             output("❌ Error: " . $e->getMessage(), "red");
         }
