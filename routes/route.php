@@ -35,6 +35,9 @@ Route::add('POST', '/user/edit/{id}', UserController::class, 'update', 'admin');
 Route::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin');
 
 
+
+
+
 /**
  * Product
  */
@@ -61,8 +64,12 @@ Route::add('POST', '/product/edit/{id}', ProductController::class, 'update');
 Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete');
 
 
-Route::add('GET', '/runmigrate', MigrateController::class, 'index');
 
+
+
+/**
+ * Authorization
+ */
 Route::add('GET', '/register', RegisterController::class, 'index');
 Route::add('POST', '/register', AuthController::class, 'register');
 

@@ -60,11 +60,13 @@ class ProductController extends Controller
             exit();
         }
 
-        if ($this->model->create($_POST) > 0) {
+        $result = $this->model->create($_POST);
+
+        if ($result['success'] && $result['data']) {
             Flasher::setFlash('SUCCESS', 'Store', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            Flasher::setFlash('FAILED', 'Store', 'success');
+            Flasher::setFlash('FAILED', 'Store', 'danger');
             header("Location: " . BASEURL . "/product");
         }
     }
@@ -104,11 +106,13 @@ class ProductController extends Controller
             exit();
         }
 
-        if ($this->model->update($request['id'], $_POST) > 0) {
+        $result = $this->model->where('id', '=', $request['id'])->update($_POST);
+
+        if ($result['success'] && $result['data']) {
             Flasher::setFlash('SUCCESS', 'Update', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            Flasher::setFlash('FAILED', 'Update', 'success');
+            Flasher::setFlash('FAILED', 'Update', 'danger');
             header("Location: " . BASEURL . "/product");
         }
     }
@@ -123,7 +127,7 @@ class ProductController extends Controller
             Flasher::setFlash('SUCCESS', 'Delete', 'success');
             header("Location: " . BASEURL . "/product");
         } else {
-            Flasher::setFlash('FAILED', 'Delete', 'success');
+            Flasher::setFlash('FAILED', 'Delete', 'danger');
             header("Location: " . BASEURL . "/product");
         }
     }

@@ -6,8 +6,7 @@ use PDO;
 
 class Model
 {
-    protected $db;
-    protected $table;
+    protected $db, $table, $conditions = [];
 
     public function __construct()
     {
@@ -32,11 +31,11 @@ class Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data = [])
+    public function create($data = [], $imagePath = "/public/assets/img/uploads/")
     {
         $keyName = "photo";
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
-            $photo = $this->uploadImage($keyName);
+            $photo = $this->uploadImage($keyName, $imagePath);
             if ($photo == 0) {
                 return 0;
             } else {
@@ -56,16 +55,30 @@ class Model
 
         $stmt->execute();
 
-        return $stmt->rowCount();
+
+        if ($stmt->rowCount() == 0) {
+            $this->conditions = [];
+
+            return [
+                'success' => false,
+                'errorInfo' => $stmt->errorInfo(),
+                'data' => false,
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => $this->find($this->db->lastInsertId()),
+        ];
     }
 
-    public function uploadImage($key)
+    public function uploadImage($key, $imagePath = "/public/assets/img/uploads/")
     {
         if ($_FILES[$key]['error'] == 4) {
             return;
         }
 
-        $targetDir = ROOT . "/public/assets/img/uploads/";
+        $targetDir = ROOT . "{$imagePath}";
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($_FILES[$key]["name"], PATHINFO_EXTENSION));
         $randomString = bin2hex(random_bytes(10));
@@ -107,19 +120,25 @@ class Model
         }
     }
 
-    public function update($id, $data = [])
+    public function where($field, $operator, $value)
+    {
+        $this->conditions[$field] = [$operator, $value];
+        return $this;
+    }
+
+    public function update($data = [], $imagePath = "/public/assets/img/uploads/")
     {
         $keyName = "photo";
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
-            $photo = $this->uploadImage($keyName);
+            $photo = $this->uploadImage($keyName, $imagePath);
             if ($photo == 0) {
                 return 0;
             } else {
                 $data['photo'] = $photo;
 
-                $oldPhoto = $this->find($id)['photo'];
+                $oldPhoto = $this->find($this->conditions['id'][1])['photo'];
 
-                $path = ROOT . "/public/assets/img/uploads/{$oldPhoto}";
+                $path = ROOT . "{$imagePath}{$oldPhoto}";
 
                 if (file_exists($path)) {
                     unlink($path);
@@ -135,18 +154,80 @@ class Model
         }
         $updateString = implode(', ', $updates);
 
-        $stmt = $this->db->prepare("UPDATE {$this->table} SET $updateString WHERE id = :id");
-        $stmt->bindParam(":id", $id);
+        $whereConditions = [];
+        foreach ($this->conditions as $field => $condition) {
+            $whereConditions[] = "$field {$condition[0]} :{$field}_value";
+        }
+        $whereString = implode(' AND ', $whereConditions);
+
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET $updateString WHERE $whereString");
 
         foreach ($data as $key => $value) {
             $stmt->bindParam(":$key", $data[$key]);
         }
 
+        foreach ($this->conditions as $field => $condition) {
+            $stmt->bindParam(":{$field}_value", $condition[1]);
+        }
+
         $stmt->execute();
 
-        return $stmt->rowCount();
+
+        if ($stmt->rowCount() == 0) {
+            $this->conditions = [];
+
+            return [
+                'success' => false,
+                'errorInfo' => $stmt->errorInfo(),
+                'data' => false,
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => $this->find($this->conditions['id'][1]),
+        ];
     }
 
+    // public function update($id, $data = [], $imagePath = "/public/assets/img/uploads/")
+    // {
+    //     $keyName = "photo";
+    //     if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
+    //         $photo = $this->uploadImage($keyName);
+    //         if ($photo == 0) {
+    //             return 0;
+    //         } else {
+    //             $data['photo'] = $photo;
+
+    //             $oldPhoto = $this->find($id)['photo'];
+
+    //             $path = ROOT . "{$imagePath}{$oldPhoto}";
+
+    //             if (file_exists($path)) {
+    //                 unlink($path);
+    //             }
+    //         }
+    //     }
+
+    //     $data['updated_at'] = date('Y-m-d H:i:s');
+
+    //     $updates = [];
+    //     foreach ($data as $key => $value) {
+    //         $updates[] = "$key = :$key";
+    //     }
+    //     $updateString = implode(', ', $updates);
+
+    //     $stmt = $this->db->prepare("UPDATE {$this->table} SET $updateString WHERE id = :id");
+    //     $stmt->bindParam(":id", $id);
+
+    //     foreach ($data as $key => $value) {
+    //         $stmt->bindParam(":$key", $data[$key]);
+    //     }
+
+    //     $stmt->execute();
+
+    //     return $stmt->rowCount();
+    // }
 
     public function delete($id)
     {
@@ -154,9 +235,20 @@ class Model
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        return $stmt->rowCount();
-    }
+        if ($stmt->rowCount() == 0) {
+            $this->conditions = [];
 
+            return [
+                'success' => false,
+                'errorInfo' => $stmt->errorInfo(),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => "delete successfully",
+        ];
+    }
 
     public function deletePermanent($id)
     {
@@ -164,26 +256,18 @@ class Model
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        return $stmt->rowCount();
-    }
+        if ($stmt->rowCount() == 0) {
+            $this->conditions = [];
 
-    public function runMigration()
-    {
-        try {
-            $conn = "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']}:{$_ENV['DB_PORT']}";
-            $tempDb = new PDO($conn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
-            $tempDb->exec("DROP DATABASE IF EXISTS {$_ENV['DB_NAME']}");
-            $tempDb->exec("CREATE DATABASE {$_ENV['DB_NAME']}");
-            $tempDb = null;
-
-            $this->db->exec("USE {$_ENV['DB_NAME']}");
-
-            $sql = file_get_contents(__DIR__ . "/../../database/{$_ENV['DB_NAME']}.sql");
-            $this->db->exec($sql);
-            echo "db migrate succesfully!<br>
-                <a href=" . '"' . BASEURL . '/user"' . "><- Back</a>";
-        } catch (\PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            return [
+                'success' => false,
+                'errorInfo' => $stmt->errorInfo(),
+            ];
         }
+
+        return [
+            'success' => true,
+            'message' => "delete successfully",
+        ];
     }
 }
