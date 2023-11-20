@@ -4,7 +4,6 @@ namespace FrameworkSimas\Controller;
 
 use FrameworkSimas\Model\User;
 use Rakit\Validation\Validator;
-use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\JWTAuth;
 use FrameworkSimas\Config\Controller;
 
@@ -102,7 +101,7 @@ class AuthController extends Controller
             'name'  => $user['name'],
             'email' => $user['email'],
             'role'  => $user['role'],
-            'exp'   => time() + 60 * 60 // Token berlaku selama 1 jam
+            'exp'   => time() + 60 * 60
         ];
 
         JWTAuth::createToken($token, $token['exp']);
