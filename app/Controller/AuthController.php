@@ -32,55 +32,73 @@ class AuthController extends Controller
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = request();
 
-            if ($this->isWebRequest()) {
-                redirect("/register");
+            if (!isWebRequest()) {
+                return jsonResponse(['error' => 'Validation failed', 'errors' => $errors], 400);
             }
 
-            return jsonResponse(['error' => 'Validation failed', 'errors' => $errors], 400);
+            redirect("/register");
         }
 
         if ($this->user->create(request()) > 0) {
+            if (!isWebRequest()) {
+                return jsonResponse(['message' => 'Account registered successfully'], 201);
+            }
+
             successFlash('Registering your account');
-
-            if ($this->isWebRequest()) {
-                redirect("/login");
-            }
-
-            return jsonResponse(['message' => 'Account registered successfully'], 201);
+            redirect("/login");
         } else {
-            failedFlash('Registering your account');
-
-            if ($this->isWebRequest()) {
-                redirect("/register");
+            if (!isWebRequest()) {
+                return jsonResponse(['error' => 'Account registration failed'], 500);
             }
 
-            return jsonResponse(['error' => 'Account registration failed'], 500);
+            failedFlash('Registering your account');
+            redirect("/register");
         }
     }
 
     public function login()
     {
-        if ($this->isWebRequest()) {
-            $validator = new Validator;
-            $validation = $validator->make(request(), [
-                'email'    => 'required',
-                'password' => 'required'
-            ]);
+        $validator = new Validator;
+        $validation = $validator->make(request(), [
+            'email'    => 'required',
+            'password' => 'required'
+        ]);
 
-            $validation->validate();
+        $validation->validate();
 
-            if ($validation->fails()) {
-                $errors = $validation->errors()->firstOfAll();
-                $_SESSION['errors'] = $errors;
-                $_SESSION['old'] = request();
+        if ($validation->fails()) {
+            $errors = $validation->errors()->firstOfAll();
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = request();
 
-                return redirect("/login");
+            if (!isWebRequest()) {
+                if (!isset(request()['email']) || !isset(request()['password'])) {
+                    return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
+                }
             }
-        } else {
-            if (!isset(request()['email']) || !isset(request()['password'])) {
-                return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
-            }
+            return redirect("/login");
         }
+        // if (!isWebRequest()) {
+        //     $validator = new Validator;
+        //     $validation = $validator->make(request(), [
+        //         'email'    => 'required',
+        //         'password' => 'required'
+        //     ]);
+
+        //     $validation->validate();
+
+        //     if ($validation->fails()) {
+        //         $errors = $validation->errors()->firstOfAll();
+        //         $_SESSION['errors'] = $errors;
+        //         $_SESSION['old'] = request();
+
+        //         return redirect("/login");
+        //     }
+        // } else {
+        //     if (!isset(request()['email']) || !isset(request()['password'])) {
+        //         return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
+        //     }
+        // }
 
         $email = request()['email'];
         $password = request()['password'];
@@ -88,12 +106,12 @@ class AuthController extends Controller
         $user = $this->user->getUserByEmail($email);
 
         if (!$user || $user['password'] !== $password) {
-            if ($this->isWebRequest()) {
-                failedFlash('Email or password incorrect');
-                return redirect("/register");
-            } else {
+            if (!isWebRequest()) {
                 return jsonResponse(['error' => 'Email or password incorrect'], 401);
             }
+
+            failedFlash('Email or password incorrect');
+            return redirect("/register");
         }
 
         $token = [
@@ -105,31 +123,25 @@ class AuthController extends Controller
         ];
 
         JWTAuth::createToken($token, $token['exp']);
-        successFlash('Login');
 
-        if ($this->isWebRequest()) {
-            return redirect("/user");
-        } else {
+        if (!isWebRequest()) {
             return jsonResponse(['message' => 'Login successful', 'token' => $_COOKIE['token']]);
         }
+
+        successFlash('Login');
+        return redirect("/user");
     }
 
 
     public function logout()
     {
         JWTAuth::deleteToken();
-        successFlash('Logout');
 
-        if ($this->isWebRequest()) {
-            redirect("/login");
+        if (!isWebRequest()) {
+            return jsonResponse(['message' => 'Logout successful']);
         }
 
-        return jsonResponse(['message' => 'Logout successful']);
-    }
-
-    private function isWebRequest()
-    {
-        $path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        return strpos($path, '/api/') !== 0;
+        successFlash('Logout');
+        redirect("/login");
     }
 }

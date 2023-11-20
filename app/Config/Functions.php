@@ -121,3 +121,9 @@ function request()
 
     return $requestData;
 }
+
+function isWebRequest()
+{
+    $path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    return strpos($path, '/api/') !== 0;
+}
