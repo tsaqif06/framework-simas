@@ -22,10 +22,10 @@ class Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find($id)
+    public function find($key, $val)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id");
-        $stmt->bindParam(":id", $id);
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE {$key} = :val");
+        $stmt->bindParam(":val", $val);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,7 +68,7 @@ class Model
 
         return [
             'success' => true,
-            'data' => $this->find($this->db->lastInsertId()),
+            'data' => $this->find('id', $this->db->lastInsertId()),
         ];
     }
 
@@ -136,7 +136,7 @@ class Model
             } else {
                 $data['photo'] = $photo;
 
-                $oldPhoto = $this->find($this->conditions['id'][1])['photo'];
+                $oldPhoto = $this->find('id', $this->conditions['id'][1])['photo'];
 
                 $path = ROOT . "{$imagePath}/{$oldPhoto}";
 
@@ -185,7 +185,7 @@ class Model
 
         return [
             'success' => true,
-            'data' => $this->find($this->conditions['id'][1]),
+            'data' => $this->find('id', $this->conditions['id'][1]),
         ];
     }
 

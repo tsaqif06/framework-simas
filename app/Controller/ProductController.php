@@ -77,7 +77,7 @@ class ProductController extends Controller
     {
         return $this->view("product/edit", [
             'title' => "Product - Edit",
-            'product' => $this->model->find($request['id']),
+            'product' => $this->model->find('id', $request['id']),
         ]);
     }
 

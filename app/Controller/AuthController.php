@@ -39,7 +39,13 @@ class AuthController extends Controller
             redirect("/register");
         }
 
-        if ($this->user->create(request()) > 0) {
+        $newUser = [
+            "name" => request('name'),
+            "email" => request('email'),
+            "password" => hashPassword(request('password')),
+        ];
+
+        if ($this->user->create($newUser) > 0) {
             if (!isWebRequest()) {
                 return jsonResponse(['message' => 'Account registered successfully'], 201);
             }
@@ -66,46 +72,26 @@ class AuthController extends Controller
 
         $validation->validate();
 
+        $email = request('email');
+        $password = request('password');
+
         if ($validation->fails()) {
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = request();
 
             if (!isWebRequest()) {
-                if (!isset(request()['email']) || !isset(request()['password'])) {
+                if (!isset($email) || !isset($password)) {
                     return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
                 }
             }
+
             return redirect("/login");
         }
-        // if (!isWebRequest()) {
-        //     $validator = new Validator;
-        //     $validation = $validator->make(request(), [
-        //         'email'    => 'required',
-        //         'password' => 'required'
-        //     ]);
 
-        //     $validation->validate();
+        $user = $this->user->find('email', $email);
 
-        //     if ($validation->fails()) {
-        //         $errors = $validation->errors()->firstOfAll();
-        //         $_SESSION['errors'] = $errors;
-        //         $_SESSION['old'] = request();
-
-        //         return redirect("/login");
-        //     }
-        // } else {
-        //     if (!isset(request()['email']) || !isset(request()['password'])) {
-        //         return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
-        //     }
-        // }
-
-        $email = request()['email'];
-        $password = request()['password'];
-
-        $user = $this->user->getUserByEmail($email);
-
-        if (!$user || $user['password'] !== $password) {
+        if (!$user || !password_verify($password, $user['password'])) {
             if (!isWebRequest()) {
                 return jsonResponse(['error' => 'Email or password incorrect'], 401);
             }

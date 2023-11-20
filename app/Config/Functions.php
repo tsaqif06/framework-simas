@@ -104,7 +104,7 @@ function redirect($dest)
     header("Location: " . BASEURL . "{$dest}");
 }
 
-function request()
+function request($key = null)
 {
     $requestData = [];
 
@@ -115,11 +115,20 @@ function request()
     $jsonPayload = file_get_contents('php://input');
     $jsonDecoded = json_decode($jsonPayload, true);
 
-    if ($jsonDecoded !== null) {
+    if ($jsonDecoded !== null && is_array($jsonDecoded)) {
         $requestData += $jsonDecoded;
     }
 
+    if ($key !== null) {
+        return isset($requestData[$key]) ? $requestData[$key] : null;
+    }
+
     return $requestData;
+}
+
+function hashPassword($password)
+{
+    return password_hash($password, PASSWORD_DEFAULT);
 }
 
 function isWebRequest()

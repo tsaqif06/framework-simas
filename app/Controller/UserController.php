@@ -77,7 +77,7 @@ class UserController extends Controller
     {
         return $this->view("home/edit", [
             'title' => 'User - Edit',
-            'user' => $this->model->find($request['id']),
+            'user' => $this->model->find('id', $request['id']),
         ]);
     }
 

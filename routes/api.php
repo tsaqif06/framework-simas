@@ -69,6 +69,6 @@ Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete', 'a
 /**
  * Authorization
  */
-Route::add('POST', '/register', AuthController::class, 'register');
+Route::add('POST', '/api/register', AuthController::class, 'register');
 
 Route::add('POST', '/api/login', AuthController::class, 'login');
