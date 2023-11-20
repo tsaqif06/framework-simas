@@ -3,7 +3,9 @@
 <h1><?= lang('greeting', ['name' => auth()->name]) ?></h1>
 <?= flasher() ?>
 
-<a href="<?= BASEURL ?>/user/create"><?= lang('add') ?></a>
+<?php if (auth()->role === 'admin') : ?>
+    <a href="<?= BASEURL ?>/user/create"><?= lang('add') ?></a>
+<?php endif ?>
 <table>
     <?php $i = 1 ?>
     <?php foreach ($data['user'] as $user) : ?>
@@ -12,8 +14,10 @@
             <td><?= $user['name'] ?></td>
             <td><?= $user['email'] ?></td>
             <td><?= $user['password'] ?></td>
-            <td><a href="<?= BASEURL ?>/user/edit/<?= $user['id'] ?>">EDIT</a></td>
-            <td><a href="<?= BASEURL ?>/user/delete/<?= $user['id'] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a></td>
+            <?php if (auth()->role === 'admin') : ?>
+                <td><a href="<?= BASEURL ?>/user/edit/<?= $user['id'] ?>">EDIT</a></td>
+                <td><a href="<?= BASEURL ?>/user/delete/<?= $user['id'] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a></td>
+            <?php endif ?>
         </tr>
         <?php $i++ ?>
     <?php endforeach ?>

@@ -54,13 +54,13 @@ Route::add('POST', '/product/create', ProductController::class, 'store');
 /**
  * edit
  */
-Route::add('GET', '/product/edit/{id}', ProductController::class, 'edit');
-Route::add('POST', '/product/edit/{id}', ProductController::class, 'update');
+Route::add('GET', '/product/edit/{id}', ProductController::class, 'edit', 'admin');
+Route::add('POST', '/product/edit/{id}', ProductController::class, 'update', 'admin');
 
 /**
  * delete
  */
-Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete');
+Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete', 'admin');
 
 
 
