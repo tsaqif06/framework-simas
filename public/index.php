@@ -12,4 +12,5 @@ require_once __DIR__ . "/../app/Config/Functions.php";
 define("BASEURL", $_ENV['BASE_URL']);
 define("ROOT", $_SERVER['DOCUMENT_ROOT'] . "/../");
 
-require_once __DIR__ . '/../routes/route.php';
+require_once __DIR__ . '/../routes/api.php';
+require_once __DIR__ . '/../routes/web.php';

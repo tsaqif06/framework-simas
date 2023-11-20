@@ -19,15 +19,11 @@ class AuthController extends Controller
 
     public function register()
     {
-        if (isset($_SESSION['errors'])) {
-            unset($_SESSION['errors']);
-        }
         $validator = new Validator;
-
-        $validation = $validator->make($_POST, [
-            'name'                  => 'required',
-            'email'                 => 'required',
-            'password'              => 'required|min:5'
+        $validation = $validator->make(request(), [
+            'name'     => 'required',
+            'email'    => 'required',
+            'password' => 'required|min:5'
         ]);
 
         $validation->validate();
@@ -35,70 +31,106 @@ class AuthController extends Controller
         if ($validation->fails()) {
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = $_POST;
-            redirect("/register");
-            exit();
+            $_SESSION['old'] = request();
+
+            if ($this->isWebRequest()) {
+                redirect("/register");
+            }
+
+            return jsonResponse(['error' => 'Validation failed', 'errors' => $errors], 400);
         }
 
-        if ($this->user->create($_POST) > 0) {
+        if ($this->user->create(request()) > 0) {
             successFlash('Registering your account');
-            redirect("/login");
+
+            if ($this->isWebRequest()) {
+                redirect("/login");
+            }
+
+            return jsonResponse(['message' => 'Account registered successfully'], 201);
         } else {
             failedFlash('Registering your account');
-            redirect("/register");
+
+            if ($this->isWebRequest()) {
+                redirect("/register");
+            }
+
+            return jsonResponse(['error' => 'Account registration failed'], 500);
         }
     }
 
     public function login()
     {
-        if (isset($_SESSION['errors'])) {
-            unset($_SESSION['errors']);
+        if ($this->isWebRequest()) {
+            $validator = new Validator;
+            $validation = $validator->make(request(), [
+                'email'    => 'required',
+                'password' => 'required'
+            ]);
+
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors()->firstOfAll();
+                $_SESSION['errors'] = $errors;
+                $_SESSION['old'] = request();
+
+                return redirect("/login");
+            }
+        } else {
+            if (!isset(request()['email']) || !isset(request()['password'])) {
+                return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
+            }
         }
-        $validator = new Validator;
 
-        $validation = $validator->make($_POST, [
-            'email'                 => 'required',
-            'password'              => 'required'
-        ]);
-
-        $validation->validate();
-
-        if ($validation->fails()) {
-            $errors = $validation->errors()->firstOfAll();
-            $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = $_POST;
-            redirect("/login");
-            exit();
-        }
-
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $email = request()['email'];
+        $password = request()['password'];
 
         $user = $this->user->getUserByEmail($email);
 
         if (!$user || $user['password'] !== $password) {
-            failedFlash('Email or password incorrect');
-            redirect("/register");
+            if ($this->isWebRequest()) {
+                failedFlash('Email or password incorrect');
+                return redirect("/register");
+            } else {
+                return jsonResponse(['error' => 'Email or password incorrect'], 401);
+            }
         }
 
         $token = [
-            'sub' => $user['id'],
-            'name' => $user['name'],
+            'sub'   => $user['id'],
+            'name'  => $user['name'],
             'email' => $user['email'],
-            'role' => $user['role'],
-            'exp' => time() + 60 * 60 // Token berlaku selama 1 jam
+            'role'  => $user['role'],
+            'exp'   => time() + 60 * 60 // Token berlaku selama 1 jam
         ];
 
         JWTAuth::createToken($token, $token['exp']);
         successFlash('Login');
-        redirect("/user");
+
+        if ($this->isWebRequest()) {
+            return redirect("/user");
+        } else {
+            return jsonResponse(['message' => 'Login successful', 'token' => $_COOKIE['token']]);
+        }
     }
+
 
     public function logout()
     {
         JWTAuth::deleteToken();
         successFlash('Logout');
-        redirect("/login");
-        exit;
+
+        if ($this->isWebRequest()) {
+            redirect("/login");
+        }
+
+        return jsonResponse(['message' => 'Logout successful']);
+    }
+
+    private function isWebRequest()
+    {
+        $path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        return strpos($path, '/api/') !== 0;
     }
 }

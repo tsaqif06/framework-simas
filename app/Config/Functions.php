@@ -90,7 +90,7 @@ function isRoute($routeName)
     return isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === $routeName;
 }
 
-function jsonResponse($data, $statusCode)
+function jsonResponse($data, $statusCode = 200)
 {
     header('Access-Control-Allow-Origin: *');
     header("Content-Type: application/json");
@@ -102,4 +102,22 @@ function jsonResponse($data, $statusCode)
 function redirect($dest)
 {
     header("Location: " . BASEURL . "{$dest}");
+}
+
+function request()
+{
+    $requestData = [];
+
+    if (!empty($_POST)) {
+        $requestData += $_POST;
+    }
+
+    $jsonPayload = file_get_contents('php://input');
+    $jsonDecoded = json_decode($jsonPayload, true);
+
+    if ($jsonDecoded !== null) {
+        $requestData += $jsonDecoded;
+    }
+
+    return $requestData;
 }
