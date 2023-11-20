@@ -60,6 +60,16 @@ function flasher()
     return Flasher::flash();
 }
 
+function successFlash($message)
+{
+    Flasher::setFlash('SUCCESS', $message, 'success');
+}
+
+function failedFlash($message)
+{
+    Flasher::setFlash('FAILED', $message, 'danger');
+}
+
 function lang($key, $variables = [])
 {
     $lang = include ROOT .  "/app/Lang/{$_ENV['APP_LANG']}.php";
@@ -87,4 +97,9 @@ function jsonResponse($data, $statusCode)
     http_response_code($statusCode);
     echo json_encode($data);
     exit();
+}
+
+function redirect($dest)
+{
+    header("Location: " . BASEURL . "{$dest}");
 }

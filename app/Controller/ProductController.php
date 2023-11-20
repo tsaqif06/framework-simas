@@ -56,18 +56,18 @@ class ProductController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /product/create");
+            redirect("/product/create");
             exit();
         }
 
         $result = $this->model->create($_POST);
 
         if ($result['success'] && $result['data']) {
-            Flasher::setFlash('SUCCESS', 'Store', 'success');
-            header("Location: " . BASEURL . "/product");
+            successFlash('Storing data');
+            redirect("/product");
         } else {
-            Flasher::setFlash('FAILED', 'Store', 'danger');
-            header("Location: " . BASEURL . "/product");
+            failedFlash('Storing data');
+            redirect("/product");
         }
     }
 
@@ -102,18 +102,18 @@ class ProductController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /product/edit/{$request['id']}");
+            redirect("/product/edit/{$request['id']}");
             exit();
         }
 
         $result = $this->model->where('id', '=', $request['id'])->update($_POST);
 
         if ($result['success'] && $result['data']) {
-            Flasher::setFlash('SUCCESS', 'Update', 'success');
-            header("Location: " . BASEURL . "/product");
+            successFlash('Updating data');
+            redirect("/product");
         } else {
-            Flasher::setFlash('FAILED', 'Update', 'danger');
-            header("Location: " . BASEURL . "/product");
+            failedFlash('Updating data');
+            redirect("/product");
         }
     }
 
@@ -124,11 +124,11 @@ class ProductController extends Controller
     public function delete($request)
     {
         if ($this->model->delete($request['id']) > 0) {
-            Flasher::setFlash('SUCCESS', 'Delete', 'success');
-            header("Location: " . BASEURL . "/product");
+            successFlash('Deleting data');
+            redirect("/product");
         } else {
-            Flasher::setFlash('FAILED', 'Delete', 'danger');
-            header("Location: " . BASEURL . "/product");
+            failedFlash('Deleting data');
+            redirect("/product");
         }
     }
 }

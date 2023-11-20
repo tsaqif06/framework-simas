@@ -36,16 +36,16 @@ class AuthController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /register");
+            redirect("/register");
             exit();
         }
 
         if ($this->user->create($_POST) > 0) {
-            Flasher::setFlash('SUCCESS', 'Register', 'success');
-            header("Location: " . BASEURL . "/login");
+            successFlash('Registering your account');
+            redirect("/login");
         } else {
-            Flasher::setFlash('FAILED', 'Register', 'success');
-            header("Location: " . BASEURL . "/register");
+            failedFlash('Registering your account');
+            redirect("/register");
         }
     }
 
@@ -67,7 +67,7 @@ class AuthController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /login");
+            redirect("/login");
             exit();
         }
 
@@ -77,8 +77,8 @@ class AuthController extends Controller
         $user = $this->user->getUserByEmail($email);
 
         if (!$user || $user['password'] !== $password) {
-            Flasher::setFlash('FAILED', 'Login', 'success');
-            header("Location: " . BASEURL . "/register");
+            failedFlash('Email or password incorrect');
+            redirect("/register");
         }
 
         $token = [
@@ -90,15 +90,15 @@ class AuthController extends Controller
         ];
 
         JWTAuth::createToken($token, $token['exp']);
-        Flasher::setFlash('SUCCESS', 'Login', 'success');
-        header("Location: " . BASEURL . "/user");
+        successFlash('Login');
+        redirect("/user");
     }
 
     public function logout()
     {
         JWTAuth::deleteToken();
-        Flasher::setFlash('SUCCESS', 'Logout', 'success');
-        header("Location: " . BASEURL . "/login");
+        successFlash('Logout');
+        redirect("/login");
         exit;
     }
 }

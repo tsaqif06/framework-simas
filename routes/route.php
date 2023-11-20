@@ -4,7 +4,6 @@ use FrameworkSimas\Config\Route;
 use FrameworkSimas\Controller\AuthController;
 use FrameworkSimas\Controller\UserController;
 use FrameworkSimas\Controller\LoginController;
-use FrameworkSimas\Controller\MigrateController;
 use FrameworkSimas\Controller\ProductController;
 use FrameworkSimas\Controller\RegisterController;
 

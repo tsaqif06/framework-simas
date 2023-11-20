@@ -56,18 +56,18 @@ class UserController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /user/create");
+            redirect("/user/create");
             exit();
         }
 
         $result = $this->model->create($_POST);
 
         if ($result['success'] && $result['data']) {
-            Flasher::setFlash('SUCCESS', 'Store', 'success');
-            header("Location: " . BASEURL . "/user");
+            successFlash('Storing data');
+            redirect("/user");
         } else {
-            Flasher::setFlash('FAILED', 'Store', 'danger');
-            header("Location: " . BASEURL . "/user");
+            failedFlash('Storing data');
+            redirect("/user");
         }
     }
 
@@ -105,18 +105,18 @@ class UserController extends Controller
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
-            header("Location: /user/edit/{$request['id']}");
+            redirect("/user/edit/{$request['id']}");
             exit();
         }
 
         $result = $this->model->where('id', '=', $request['id'])->update($_POST);
 
         if ($result['success'] && $result['data']) {
-            Flasher::setFlash('SUCCESS', 'Update', 'success');
-            header("Location: " . BASEURL . "/user");
+            successFlash('Updating data');
+            redirect("/user");
         } else {
-            Flasher::setFlash('FAILED', 'Update', 'danger');
-            header("Location: " . BASEURL . "/user");
+            failedFlash('Updating data');
+            redirect("/user");
         }
     }
 
@@ -127,11 +127,11 @@ class UserController extends Controller
     public function delete($request)
     {
         if ($this->model->delete($request['id']) > 0) {
-            Flasher::setFlash('SUCCESS', 'Delete', 'success');
-            header("Location: " . BASEURL . "/user");
+            successFlash('Deleting data');
+            redirect("/user");
         } else {
-            Flasher::setFlash('FAILED', 'Delete', 'danger');
-            header("Location: " . BASEURL . "/user");
+            failedFlash('Deleting data');
+            redirect("/user");
         }
     }
 }
