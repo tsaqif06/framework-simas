@@ -4,7 +4,6 @@ namespace FrameworkSimas\Controller;
 
 use FrameworkSimas\Model\User;
 use Rakit\Validation\Validator;
-use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\Controller;
 
 class UserController extends Controller

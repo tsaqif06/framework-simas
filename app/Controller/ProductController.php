@@ -5,7 +5,6 @@ namespace FrameworkSimas\Controller;
 use Rakit\Validation\Validator;
 
 use FrameworkSimas\Model\Product;
-use FrameworkSimas\Config\Flasher;
 use FrameworkSimas\Config\Controller;
 
 class ProductController extends Controller
