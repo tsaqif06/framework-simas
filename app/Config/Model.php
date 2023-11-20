@@ -31,7 +31,7 @@ class Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data = [], $imagePath = "/public/assets/img/uploads/")
+    public function create($data = [], $imagePath = "/public/assets/img/uploads")
     {
         $keyName = "photo";
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
@@ -72,13 +72,13 @@ class Model
         ];
     }
 
-    public function uploadImage($key, $imagePath = "/public/assets/img/uploads/")
+    public function uploadImage($key, $imagePath = "/public/assets/img/uploads")
     {
         if ($_FILES[$key]['error'] == 4) {
             return;
         }
 
-        $targetDir = ROOT . "{$imagePath}";
+        $targetDir = ROOT . "{$imagePath}/";
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($_FILES[$key]["name"], PATHINFO_EXTENSION));
         $randomString = bin2hex(random_bytes(10));
@@ -126,7 +126,7 @@ class Model
         return $this;
     }
 
-    public function update($data = [], $imagePath = "/public/assets/img/uploads/")
+    public function update($data = [], $imagePath = "/public/assets/img/uploads")
     {
         $keyName = "photo";
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
@@ -138,7 +138,7 @@ class Model
 
                 $oldPhoto = $this->find($this->conditions['id'][1])['photo'];
 
-                $path = ROOT . "{$imagePath}{$oldPhoto}";
+                $path = ROOT . "{$imagePath}/{$oldPhoto}";
 
                 if (file_exists($path)) {
                     unlink($path);
