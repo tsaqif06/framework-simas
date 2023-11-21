@@ -19,16 +19,63 @@ class Model
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE deleted_at IS NULL");
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!isWebRequest()) {
+            if (!$data) {
+                return [
+                    'success' => false,
+                    'message' => "Internal server error",
+                    'data' => false,
+                    'status' => 500,
+                ];
+            }
+    
+            return [
+                'success' => true,
+                'message' => "Success fetching data",
+                'data' => $data,
+                'status' => 200,
+            ];
+        }
+
+        return $data;
     }
 
     public function find($key, $val)
     {
+        if (!$key || !$val) {
+            return [
+                'success' => false,
+                'message' => "Internal server error",
+                'data' => false,
+                'status' => 500,
+            ];
+        }
+
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE {$key} = :val");
         $stmt->bindParam(":val", $val);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!isWebRequest()) {
+            if (!$data) {
+                return [
+                    'success' => false,
+                    'message' => "Data not found",
+                    'data' => false,
+                    'status' => 400,
+                ];
+            }
+    
+            return [
+                'success' => true,
+                'message' => "Success fetching data",
+                'data' => $data,
+                'status' => 200,
+            ];
+        }
+
+        return $data;
     }
 
     public function create($data = [], $imagePath = "/public/assets/img/uploads")
@@ -188,46 +235,6 @@ class Model
             'data' => $this->find('id', $this->conditions['id'][1]),
         ];
     }
-
-    // public function update($id, $data = [], $imagePath = "/public/assets/img/uploads/")
-    // {
-    //     $keyName = "photo";
-    //     if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
-    //         $photo = $this->uploadImage($keyName);
-    //         if ($photo == 0) {
-    //             return 0;
-    //         } else {
-    //             $data['photo'] = $photo;
-
-    //             $oldPhoto = $this->find($id)['photo'];
-
-    //             $path = ROOT . "{$imagePath}{$oldPhoto}";
-
-    //             if (file_exists($path)) {
-    //                 unlink($path);
-    //             }
-    //         }
-    //     }
-
-    //     $data['updated_at'] = date('Y-m-d H:i:s');
-
-    //     $updates = [];
-    //     foreach ($data as $key => $value) {
-    //         $updates[] = "$key = :$key";
-    //     }
-    //     $updateString = implode(', ', $updates);
-
-    //     $stmt = $this->db->prepare("UPDATE {$this->table} SET $updateString WHERE id = :id");
-    //     $stmt->bindParam(":id", $id);
-
-    //     foreach ($data as $key => $value) {
-    //         $stmt->bindParam(":$key", $data[$key]);
-    //     }
-
-    //     $stmt->execute();
-
-    //     return $stmt->rowCount();
-    // }
 
     public function delete($id)
     {

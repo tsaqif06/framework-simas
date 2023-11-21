@@ -33,7 +33,7 @@ class AuthController extends Controller
             $_SESSION['old'] = request();
 
             if (!isWebRequest()) {
-                return jsonResponse(['error' => 'Validation failed', 'errors' => $errors], 400);
+                return jsonResponse(['success' => false, 'error' => 'Validation failed', 'errors' => $errors], 400);
             }
 
             redirect("/register");
@@ -47,14 +47,14 @@ class AuthController extends Controller
 
         if ($this->user->create($newUser) > 0) {
             if (!isWebRequest()) {
-                return jsonResponse(['message' => 'Account registered successfully'], 201);
+                return jsonResponse(['success' => true, 'message' => 'Account registered successfully'], 201);
             }
 
             successFlash('Registering your account');
             redirect("/login");
         } else {
             if (!isWebRequest()) {
-                return jsonResponse(['error' => 'Account registration failed'], 500);
+                return jsonResponse(['success' => false, 'error' => 'Account registration failed'], 500);
             }
 
             failedFlash('Registering your account');
@@ -82,7 +82,7 @@ class AuthController extends Controller
 
             if (!isWebRequest()) {
                 if (!isset($email) || !isset($password)) {
-                    return jsonResponse(['error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
+                    return jsonResponse(['success' => false, 'error' => 'Validation failed', 'errors' => "Wrong credential"], 400);
                 }
             }
 
@@ -93,11 +93,11 @@ class AuthController extends Controller
 
         if (!$user || !password_verify($password, $user['password'])) {
             if (!isWebRequest()) {
-                return jsonResponse(['error' => 'Email or password incorrect'], 401);
+                return jsonResponse(['success' => false, 'error' => 'Email or password incorrect'], 401);
             }
 
             failedFlash('Email or password incorrect');
-            return redirect("/register");
+            return redirect("/login");
         }
 
         $token = [
@@ -111,7 +111,7 @@ class AuthController extends Controller
         JWTAuth::createToken($token, $token['exp']);
 
         if (!isWebRequest()) {
-            return jsonResponse(['message' => 'Login successful', 'token' => $_COOKIE['token']]);
+            return jsonResponse(['success' => true, 'message' => 'Login successful', 'token' => $_COOKIE['token']]);
         }
 
         successFlash('Login');
@@ -124,7 +124,7 @@ class AuthController extends Controller
         JWTAuth::deleteToken();
 
         if (!isWebRequest()) {
-            return jsonResponse(['message' => 'Logout successful']);
+            return jsonResponse(['success' => true, 'message' => 'Logout successful']);
         }
 
         successFlash('Logout');

@@ -18,10 +18,41 @@ class ProductController extends Controller
     // main page
     public function index()
     {
+        $data = $this->model->all();
+
+        // API RESPONSE
+        if (!isWebRequest()) {
+            if ($data['status'] != 200) {
+                return jsonResponse($data, $data['status']);
+            }
+
+            return jsonResponse($data);
+        }
+
+        // WEB RESPONSE
         return $this->view("product/index", [
             'title' => 'Product - Main',
-            'products' => $this->model->all(),
+            'products' => $data,
         ]);
+    }
+
+    public function find($request)
+    {
+        $data = $this->model->find('id', $request['id']);
+
+        // API RESPONSE
+        if (!isWebRequest()) {
+            if ($data['status'] != 200) {
+                return jsonResponse($data, $data['status']);
+            }
+
+            return jsonResponse($data);
+        }
+
+        // return $this->view("product/index", [
+        //     'title' => 'Product - Main',
+        //     'products' => $data,
+        // ]);
     }
 
     /** 
@@ -44,7 +75,7 @@ class ProductController extends Controller
         }
         $validator = new Validator;
 
-        $validation = $validator->make($_POST + $_FILES, [
+        $validation = $validator->make(request() + $_FILES, [
             'name'                 => 'required',
             'photo'                => 'required|uploaded_file:0'
         ]);
@@ -54,20 +85,31 @@ class ProductController extends Controller
         if ($validation->fails()) {
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = $_POST;
+            $_SESSION['old'] = request();
             redirect("/product/create");
             exit();
         }
 
-        $result = $this->model->create($_POST);
+        $result = $this->model->create(request());
 
-        if ($result['success'] && $result['data']) {
-            successFlash('Storing data');
-            redirect("/product");
-        } else {
-            failedFlash('Storing data');
-            redirect("/product");
+        // API RESPONSE
+        if (!isWebRequest()) {
+            $status = 200;
+            if (!$result) {
+                $status = 500;
+            }
+
+            return jsonResponse($result, $status);
         }
+
+        // WEB RESPONSE
+        if (!$result['success'] && !$result['data']) {
+            failedFlash('Storing data');
+        } else {
+            successFlash('Storing data');
+        }
+
+        redirect("/product");
     }
 
     /** 
@@ -91,7 +133,7 @@ class ProductController extends Controller
         }
         $validator = new Validator;
 
-        $validation = $validator->make($_POST, [
+        $validation = $validator->make(request(), [
             'name'                 => 'required',
         ]);
 
@@ -100,20 +142,31 @@ class ProductController extends Controller
         if ($validation->fails()) {
             $errors = $validation->errors()->firstOfAll();
             $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = $_POST;
+            $_SESSION['old'] = request();
             redirect("/product/edit/{$request['id']}");
             exit();
         }
 
-        $result = $this->model->where('id', '=', $request['id'])->update($_POST);
+        $result = $this->model->where('id', '=', $request['id'])->update(request());
 
-        if ($result['success'] && $result['data']) {
-            successFlash('Updating data');
-            redirect("/product");
-        } else {
-            failedFlash('Updating data');
-            redirect("/product");
+        // API RESPONSE
+        if (!isWebRequest()) {
+            $status = 200;
+            if (!$result) {
+                $status = 500;
+            }
+
+            return jsonResponse($result, $status);
         }
+
+        // WEB RESPONSE
+        if (!$result['success'] && !$result['data']) {
+            failedFlash('Updating data');
+        } else {
+            successFlash('Updating data');
+        }
+
+        redirect("/product");
     }
 
     /**
@@ -122,12 +175,24 @@ class ProductController extends Controller
 
     public function delete($request)
     {
-        if ($this->model->delete($request['id']) > 0) {
-            successFlash('Deleting data');
-            redirect("/product");
-        } else {
-            failedFlash('Deleting data');
-            redirect("/product");
+        $result = $this->model->delete($request['id']);
+
+        // API RESPONSE
+        if (!isWebRequest()) {
+            $status = 200;
+            if (!$result) {
+                $status = 500;
+            }
+
+            return jsonResponse($result, $status);
         }
+
+        // WEB RESPONSE
+        if (!$result['success']) {
+            failedFlash('Deleting data');
+        } else {
+            successFlash('Deleting data');
+        }
+        redirect("/product");
     }
 }

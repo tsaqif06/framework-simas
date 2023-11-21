@@ -5,7 +5,7 @@
 <a href="<?= BASEURL ?>/product/create">Tambah</a>
 <table>
     <?php $i = 1 ?>
-    <?php foreach ($data['products'] as $product) : ?>
+    <?php foreach ($products as $product) : ?>
         <tr>
             <td><?= $i ?></td>
             <td><?= $product['name'] ?></td>

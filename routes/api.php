@@ -1,12 +1,9 @@
 <?php
 
-use FrameworkSimas\Config\Route;
+use FrameworkSimas\Config\API;
 use FrameworkSimas\Controller\AuthController;
 use FrameworkSimas\Controller\UserController;
-use FrameworkSimas\Controller\LoginController;
 use FrameworkSimas\Controller\ProductController;
-use FrameworkSimas\Controller\RegisterController;
-
 
 /**
  * User
@@ -14,24 +11,23 @@ use FrameworkSimas\Controller\RegisterController;
 /**
  * show
  */
-Route::add('GET', '/user', UserController::class, 'index', 'auth');
+API::add('GET', '/user', UserController::class, 'index', 'auth');
+API::add('GET', '/user/{id}', UserController::class, 'find', 'auth');
 
 /**
  * create
  */
-Route::add('GET', '/user/create', UserController::class, 'create', 'admin');
-Route::add('POST', '/user/create', UserController::class, 'store', 'admin');
+API::add('POST', '/user/create', UserController::class, 'store', 'admin');
 
 /**
  * edit
  */
-Route::add('GET', '/user/edit/{id}', UserController::class, 'edit', 'admin');
-Route::add('POST', '/user/edit/{id}', UserController::class, 'update', 'admin');
+API::add('POST', '/user/edit/{id}', UserController::class, 'upate', 'admin');
 
 /**
  * delete
  */
-Route::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin');
+API::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin');
 
 
 
@@ -43,24 +39,23 @@ Route::add('GET', '/user/delete/{id}', UserController::class, 'delete', 'admin')
 /**
  * show
  */
-Route::add('GET', '/product', ProductController::class, 'index', 'auth');
+API::add('GET', '/product', ProductController::class, 'index', 'auth');
+API::add('GET', '/product/{id}', ProductController::class, 'find', 'auth');
 
 /**
  * create
  */
-Route::add('GET', '/product/create', ProductController::class, 'create');
-Route::add('POST', '/product/create', ProductController::class, 'store');
+API::add('POST', '/product/create', ProductController::class, 'store');
 
 /**
  * edit
  */
-Route::add('GET', '/product/edit/{id}', ProductController::class, 'edit', 'admin');
-Route::add('POST', '/product/edit/{id}', ProductController::class, 'update', 'admin');
+API::add('POST', '/product/edit/{id}', ProductController::class, 'upate', 'admin');
 
 /**
  * delete
  */
-Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete', 'admin');
+API::add('GET', '/product/delete/{id}', ProductController::class, 'delete', 'admin');
 
 
 
@@ -69,6 +64,8 @@ Route::add('GET', '/product/delete/{id}', ProductController::class, 'delete', 'a
 /**
  * Authorization
  */
-Route::add('POST', '/api/register', AuthController::class, 'register');
+API::add('POST', '/register', AuthController::class, 'register');
 
-Route::add('POST', '/api/login', AuthController::class, 'login');
+API::add('POST', '/login', AuthController::class, 'login');
+
+API::run();
