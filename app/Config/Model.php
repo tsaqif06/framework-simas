@@ -41,7 +41,7 @@ class Model
         return $data;
     }
 
-    public function find($key, $val)
+    public function find($key, $val, $isApi = false)
     {
         if (!$key || !$val) {
             return [
@@ -58,21 +58,23 @@ class Model
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!isWebRequest()) {
-            if (!$data) {
+            if ($isApi) {
+                if (!$data) {
+                    return [
+                        'success' => false,
+                        'message' => "Data not found",
+                        'data' => false,
+                        'status' => 400,
+                    ];
+                }
+        
                 return [
-                    'success' => false,
-                    'message' => "Data not found",
-                    'data' => false,
-                    'status' => 400,
+                    'success' => true,
+                    'message' => "Success fetching data",
+                    'data' => $data,
+                    'status' => 200,
                 ];
             }
-    
-            return [
-                'success' => true,
-                'message' => "Success fetching data",
-                'data' => $data,
-                'status' => 200,
-            ];
         }
 
         return $data;

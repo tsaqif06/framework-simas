@@ -38,7 +38,7 @@ class ProductController extends Controller
 
     public function find($request)
     {
-        $data = $this->model->find('id', $request['id']);
+        $data = $this->model->find('id', $request['id'], true);
 
         // API RESPONSE
         if (!isWebRequest()) {
@@ -75,10 +75,13 @@ class ProductController extends Controller
         }
         $validator = new Validator;
 
-        $validation = $validator->make(request() + $_FILES, [
+        $validation = $validator->make(request(), [
             'name'                 => 'required',
-            'photo'                => 'required|uploaded_file:0'
         ]);
+        // $validation = $validator->make(request() + $_FILES, [
+        //     'name'                 => 'required',
+        //     'photo'                => 'required|uploaded_file:0'
+        // ]);
 
         $validation->validate();
 
