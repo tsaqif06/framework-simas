@@ -12,8 +12,11 @@ class RoleMiddleware
             $token = JWTAuth::getToken();
 
             if (!$token) {
-                header("Location: " . BASEURL . "/login");
-                exit();
+                if (!isWebRequest()) {
+                    return jsonResponse(['success' => 'false', 'message' => 'Unauthorized'], 401);
+                }
+
+                return redirect("/login");
             } else {
                 if ($auth == 'auth') {
                     return true;
@@ -21,9 +24,7 @@ class RoleMiddleware
                 return ($token->role == $auth) ? true : false;
             }
         } catch (\Exception $e) {
-            http_response_code(401);
-            echo json_encode(['error' => $e->getMessage()]);
-            exit;
+            return jsonResponse(['error' => $e->getMessage()], 401);
         }
     }
 }

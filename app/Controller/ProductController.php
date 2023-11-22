@@ -38,7 +38,7 @@ class ProductController extends Controller
 
     public function find($request)
     {
-        $data = $this->model->find('id', $request['id'], true);
+        $data = $this->model->find('id', $request['id'], true );
 
         // API RESPONSE
         if (!isWebRequest()) {
