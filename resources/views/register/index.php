@@ -1,5 +1,6 @@
 <?php includeView('partials/header.php', $data) ?>
 <form action="" method="POST">
+    <?= csrf() ?>
     <input type="text" name="name" id="name" placeholder="name" <?php oldValue('name') ?>><br>
     <?php errorValidate('name') ?>
     <input type="email" name="email" id="email" placeholder="email" <?php oldValue('email') ?>><br>

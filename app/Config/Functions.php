@@ -136,3 +136,12 @@ function isWebRequest()
     $path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
     return strpos($path, '/api/') !== 0;
 }
+
+function csrf()
+{
+    // Ambil token CSRF dari session
+    $csrfToken = htmlspecialchars($_SESSION['csrf_token'] ?? '');
+
+    // Buat input hidden CSRF token
+    return "<input type=\"hidden\" name=\"_csrf\" value=\"$csrfToken\">";
+}
