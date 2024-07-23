@@ -10,3 +10,5 @@ class View
         require __DIR__ . "../../../resources/views/$folder.php";
     }
 }
+
+

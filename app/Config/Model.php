@@ -29,7 +29,7 @@ class Model
                     'status' => 500,
                 ];
             }
-    
+
             return [
                 'success' => true,
                 'message' => "Success fetching data",
@@ -67,7 +67,7 @@ class Model
                         'status' => 400,
                     ];
                 }
-        
+
                 return [
                     'success' => true,
                     'message' => "Success fetching data",
@@ -83,6 +83,9 @@ class Model
     public function create($data = [], $imagePath = "/public/assets/img/uploads")
     {
         $keyName = "photo";
+
+        unset($data['_csrf']);
+
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
             $photo = $this->uploadImage($keyName, $imagePath);
             if ($photo == 0) {
@@ -178,6 +181,9 @@ class Model
     public function update($data = [], $imagePath = "/public/assets/img/uploads")
     {
         $keyName = "photo";
+
+        unset($data['_csrf']);
+
         if (isset($_FILES[$keyName]) && ($_FILES[$keyName]['error'] !== 4 || $_FILES[$keyName]['tmp_name'] !== '')) {
             $photo = $this->uploadImage($keyName, $imagePath);
             if ($photo == 0) {

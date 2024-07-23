@@ -14,12 +14,13 @@ class {{argsUp}}Controller extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = new {{argsUp}}();
     }
     // main page
     public function index()
     {
-        return $this->view("{{argsLow}}/index", [
+        return $this->view("{{argsLow}}.index", [
             'title' => '{{argsUp}} - Main',
             '{{argsLow}}s' => $this->model->all(),
         ]);
@@ -30,7 +31,7 @@ class {{argsUp}}Controller extends Controller
      */
     public function create()
     {
-        return $this->view("{{argsLow}}/create", [
+        return $this->view("{{argsLow}}.create", [
             'title' => '{{argsUp}} - Create',
         ]);
     }
@@ -74,7 +75,7 @@ class {{argsUp}}Controller extends Controller
      */
     public function edit($request)
     {
-        return $this->view("{{argsLow}}/edit", [
+        return $this->view("{{argsLow}}.edit", [
             'title' => "{{argsUp}} - Edit",
             '{{argsLow}}' => $this->model->find($request['id']),
         ]);

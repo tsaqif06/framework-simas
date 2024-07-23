@@ -12,14 +12,15 @@ class UserController extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = new User();
     }
     // main page
     public function index()
     {
-        return $this->view("home/index", [
+        return $this->view("home.index", [
             'title' => 'User - Main',
-            'user' => $this->model->all()
+            'users' => $this->model->all()
         ]);
     }
 
@@ -28,7 +29,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return $this->view("home/create", [
+        return $this->view("home.create", [
             'title' => 'User - Create',
         ]);
     }
@@ -75,7 +76,7 @@ class UserController extends Controller
      */
     public function edit($request)
     {
-        return $this->view("home/edit", [
+        return $this->view("home.edit", [
             'title' => 'User - Edit',
             'user' => $this->model->find('id', $request['id']),
         ]);

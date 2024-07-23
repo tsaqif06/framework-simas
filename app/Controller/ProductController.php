@@ -13,6 +13,7 @@ class ProductController extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = new Product();
     }
     // main page
@@ -30,7 +31,7 @@ class ProductController extends Controller
         }
 
         // WEB RESPONSE
-        return $this->view("product/index", [
+        return $this->view("product.index", [
             'title' => 'Product - Main',
             'products' => $data,
         ]);
@@ -38,7 +39,7 @@ class ProductController extends Controller
 
     public function find($request)
     {
-        $data = $this->model->find('id', $request['id'], true );
+        $data = $this->model->find('id', $request['id'], true);
 
         // API RESPONSE
         if (!isWebRequest()) {
@@ -60,7 +61,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return $this->view("product/create", [
+        return $this->view("product.create", [
             'title' => 'Product - Create',
         ]);
     }
@@ -120,7 +121,7 @@ class ProductController extends Controller
      */
     public function edit($request)
     {
-        return $this->view("product/edit", [
+        return $this->view("product.edit", [
             'title' => "Product - Edit",
             'product' => $this->model->find('id', $request['id']),
         ]);

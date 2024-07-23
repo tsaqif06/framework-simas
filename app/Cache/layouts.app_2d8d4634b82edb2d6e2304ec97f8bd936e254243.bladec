@@ -1,0 +1,5 @@
+<?php echo $this->runChild('partials.header'); ?>
+
+<?php echo $this->yieldContent('content'); ?>
+
+<?php echo $this->runChild('partials.footer'); ?>
